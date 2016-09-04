@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="cordova.js"></script>
+		<title>RadioRadio</title>
+	</head>
+	<body onload="onLoad()">
+		<ons-splitter>
+			<ons-splitter-content id="content" page="home.html"></ons-splitter-content>
+		</ons-splitter>
+		<ons-modal id="Modal_Config">
+			<ons-page>
+				<ons-toolbar>
+					<div class="center">Настройки приложения</div>
+					<div class="right">
+						<ons-toolbar-button onclick="modals('config'); LocalConfig();">
+							<i class="material-icons">&#xE5CD;</i>
+						</ons-toolbar-button>
+					</div>
+				</ons-toolbar>
+				<ons-list>
+					<ons-list-header>Качество трансляции</br>Рекомендуем использовать "автоматическую" настройку для оптимального качества звучания и потребления интернет трафика.</ons-list-header>
+					<ons-list-item tappable>
+						<label class="left">
+							<ons-input name="qa" type="radio" input-id="stream-1" value="auto"></ons-input>
+						</label>
+						<label for="stream-1" class="center">Автоматическое</label>
+					</ons-list-item>
+					<ons-list-item tappable>
+						<label class="left">
+							<ons-input name="qa" type="radio" input-id="stream-2" value="h"></ons-input>
+						</label>
+						<label for="stream-2" class="center">Высокое качество</label>
+					</ons-list-item>
+					<ons-list-item tappable>
+						<label class="left">
+							<ons-input name="qa" type="radio" input-id="stream-3" value="l"></ons-input>
+						</label>
+						<label for="stream-3" class="center">Низкое качество</label>
+					</ons-list-item>
+				</ons-list>
+				<ons-list>
+					<ons-list-header>Регион трансляции</ons-list-header>
+					<ons-list-item tappable>
+						<label class="left">
+							<ons-input name="reg" type="radio" input-id="reg-RU-MOS" value="RU-MOS" checked></ons-input>
+						</label>
+						<label for="reg-RU-MOS" class="center">Московская область</label>
+					</ons-list-item>
+				</ons-list>
+				<ons-list>
+					<ons-list-header>Экономия трафика</ons-list-header>
+					<ons-list-item tappable>
+						<label class="left">
+							<ons-input id="conf-alb" type="checkbox" input-id="album"></ons-input>
+						</label>
+						<label for="album" class="center">Отключить обложки</label>
+					</ons-list-item>
+				</ons-list>
+			</ons-page>
+		</ons-modal>
+		<ons-modal id="Modal_About">
+			<ons-page>
+				<ons-toolbar>
+					<div class="center">Информация</div>
+					<div class="right">
+						<ons-toolbar-button onclick="modals('about')">
+							<i class="material-icons">&#xE5CD;</i>
+						</ons-toolbar-button>
+					</div>
+				</ons-toolbar>
+				<p>Радиостанция «РАДИО» - молодая и очень перспективная радиосеть, с хорошим темпом развития по всей территории России.</br>Радиостанция  выходит за рамки традиционных представлений о музыкальном формате как таковом. Это уникальный, гармоничный синтез старого и нового, смешение музыкальных стилей и направлений - от классического рок-н-ролла до ультрасовременной клубной музыки. Обязательным критерием звучащей в эфире музыки является - абсолютный хит.</p>
+				<p>Радиостанция «РАДИО» - лучшая* сетевая радиостанция 2014!</br>Круглосуточное онлайн-вещание по всему миру www.radioradio.ru</p>
+				<p>Вещание в прямом эфире на FM-частотах в 45 субъектах РФ (ежедневный охват – 5 миллионов человек)</p>
+				<h4>Стоимость отправки СМС на номер 5533</h4>
+				<p><scrong>Билайн</scrong> - 9<i class="fa fa-rub" aria-hidden="true"></i></p>
+				<p><scrong>МТС</scrong> - 8.5<i class="fa fa-rub" aria-hidden="true"></i></p>
+				<p><scrong>TELE2</scrong> - 10<i class="fa fa-rub" aria-hidden="true"></i></p>
+				<p><scrong>МегаФон</scrong> - 10.5<i class="fa fa-rub" aria-hidden="true"></i></p>
+				<p><scrong>Мотив</scrong> - 9<i class="fa fa-rub" aria-hidden="true"></i></p>
+				
+				<p><a modifier="large" href="https://vk.com/bugsmafia" style="color: #fff">Разработчик: Bugsmafia</a></p>
+				<p><small>* по результатам RadioStation Awards 2014</small></p>
+			</ons-page>
+		</ons-modal>
+		<ons-modal id="Modal_Share">
+			<p style="text-align: center;">Пожалуйста, подождите... </br>Загружаем изображение альбома</p>
+			<p style="text-align: center;">
+				<ons-progress-circular indeterminate></ons-progress-circular>
+			</p>
+		</ons-modal>
+		<ons-template id="dialog.html">
+			<ons-dialog id="dialog-3">
+				<div style="text-align: center; padding: 10px;">
+					<p>
+						This dialog was created from a template.
+					<p>
+					<p>
+						<ons-button onclick="hideDialog('dialog-3')">Close</ons-button>
+					</p>
+				</div>
+			</ons-dialog>
+		</ons-template>
+		<ons-template id="home.html">
+			<ons-page>
+				<ons-speed-dial position="top left" direction="down">
+					<ons-fab><i class="material-icons">&#xE5D2;</i></ons-fab>
+					<ons-speed-dial-item onclick="modals('config')"><i class="material-icons">&#xE429;</i></ons-speed-dial-item>
+					<ons-speed-dial-item onclick="modals('about')"><i class="material-icons">&#xE8FD;</i></ons-speed-dial-item>
+				</ons-speed-dial>
+				<ons-speed-dial position="top right" direction="down" onclick="ShareTrack();">
+					<ons-fab><i class="material-icons">&#xE80D;</i></ons-fab>
+				</ons-speed-dial>
+				
+				<div class="vert_grid">
+					<div class="vert_grid_box">
+						<div class="logo"></div>
+					</div>
+					
+					<div class="vert_grid_box">
+						<div class="song">Загрузка...</div>
+						<div class="artist">ожидайте</div>
+					</div>
+					<div class="vert_grid_box" id="ads">
+						<div class="logoAds"><a href="#"></a></div>
+					</div>
+					<div class="vert_grid_box" style="position: relative;display: block;margin: 1em 0em;">
+						<ons-fab class="buttonSMS" position="bottom left" ripple><a class="smsact" href="#"><i class="material-icons">&#xE0E1;</i></a></ons-fab>
+						<ons-fab class="buttonCall" position="bottom right" ripple><a class="phoneact" href="#"><i class="material-icons">&#xE0CD;</i></a></ons-fab>
+						<div class="playbtn">
+								<div class="playaction" onclick="streamplay();">
+									<div class="l4s"></div>
+									<div class="l3s"></div>
+									<div class="l3sAnim"></div>
+									<div class="l2s"></div>
+									<div class="l2sOff"></div>
+									<div id="l2sOffAnim"></div>
+									<div class="l1s"></div>
+								</div>
+						</div>
+					</div>
+					<div class="vert_grid_box" id="poll">
+						<p class="poll_text" style="text-align: center;"></p>
+						<div class="hor_grid poll_ex">
+						</div>
+					</div>
+					<div class="vert_grid_box">
+						<p style="text-align: center;margin: 0;padding: 0;">
+							<ons-range id="volume" value="100"><i class="material-icons">&#xE04D;</i></ons-range>
+						</p>
+					</div>
+				</div>
+			</ons-page>
+		</ons-template>
+		
+		<script src="js/onsenui.min.js"></script>
+		
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery-migrate-1.4.1.min.js"></script>
+		<script src="js/jquery-migrate-3.0.0.min.js"></script>
+		<script src="js/jQuery.fastClick.js"></script>	
+		
+		
+		<script src="js/script.js"></script>
+		<link rel="stylesheet" href="css/onsenui.css"/>
+		<link rel="stylesheet" href="css/stylus/style.css"/>
+	</body>
+</html>

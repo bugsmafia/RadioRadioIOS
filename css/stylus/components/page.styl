@@ -1,0 +1,77 @@
+// NOTE: You can't use @extend that break component independent and topdoc parsing.
+
+// internal variables
+var-page-background-color = $background-color
+var-page-material-background-color = $material-background-color
+
+.page
+  reset-font()
+  background-color var-page-background-color
+  position absolute
+  top 0px
+  left 0px
+  right 0px
+  bottom 0px
+  overflow-x visible
+  overflow-y hidden
+  font-size var-font-size
+  color var-text-color
+  -ms-overflow-style none
+  transform translate3d(0,0,0)
+  -ms-transform translate3d(0,0,0)
+  -webkit-transform translate3d(0,0,0)
+  -o-transform translate3d(0,0,0)
+  -moz-transform translate3d(0,0,0)
+
+.page::-webkit-scrollbar
+  display none
+
+.page__content
+  background-color var-page-background-color
+  position absolute
+  top 0px
+  left 0px
+  right 0px
+  bottom 0px
+  box-sizing border-box
+
+.page__background
+  background-image url(.././bg.png)
+  position absolute
+  top 0px
+  left 0px
+  right 0px
+  bottom 0px
+  box-sizing border-box
+  
+.page__background:after
+	content ' '
+	background-image url(.././www.png)
+	width 100%
+	height 100%
+	display block
+	background-position 50%
+	background-repeat no-repeat
+	opacity 0.1
+	background-size cover
+	
+.content-padded
+  padding 8px
+
+.page--material
+  material-font()
+
+.page--material__content
+  material-font()
+  font-weight 400
+
+.page--material__content h1
+.page--material__content h2
+.page--material__content h3
+.page--material__content h4
+.page--material__content h5
+  material-font()
+  font-weight 400
+
+.page--material__background
+  background-color var-page-material-background-color
