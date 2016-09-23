@@ -32,7 +32,7 @@ function onBackKeyDown() {
         ons.notification.confirm('Закрыть радио?').then(
             function(answer) {
                 if (answer === 1) {
-					$my_media.stop();
+					window.plugins.streamingMedia.stopAudio();
 					OneclickPlay = 2;
                     console.log('закрывается');
 					navigator.app.exitApp();
@@ -517,21 +517,35 @@ var streamer = 1;
 var OneclickPlay = 1;
 var OneclickStop = 1;
 // Функция кнопки ПЛЕЙ основной
+$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
+$(".l3s").css("background-image", "url(img/play-l3-play.png)");
+$("#l2sOffAnim").fadeOut(750);
 function streamplay() {
+	var audioUrl = StreamGO();
     if (streamChanel == false) {
         alert('Пожалуйста подождите. Соединяемся с сервером.');
     } else if (checkConnection == 'нет соединения') {
         alert('Соединение с интернетом - отсутствует.');
     } else {
         OneclickPlay = 2;
-        if (streamer == "1") {
-            $my_media.play();
+        if (streamer == "1") {            
+			window.plugins.streamingMedia.playAudio(audioUrl);
+			$(".l3sAnim").css("background-color", "rgba(51,177,255,1)");
+			$(".l3s").css("background-image", "url(img/play-l3-stop.png)");
+			$("#l2sOffAnim").fadeIn(750);
+			streamer = 2;
         } else if (streamer == "2") {
-            $my_media.stop();
+            window.plugins.streamingMedia.stopAudio();
+			$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
+			$(".l3s").css("background-image", "url(img/play-l3-play.png)");
+			$("#l2sOffAnim").fadeOut(750);
+			streamer = 1;
         } else if (streamer == "3") {
-            $my_media.stop();
+            window.plugins.streamingMedia.stopAudio();
+			streamer = 1;
         } else if (streamer == "4") {
-            $my_media.play();
+            window.plugins.streamingMedia.stopAudio();
+			streamer = 1;
         };
     }
 }
@@ -568,7 +582,7 @@ function streamRePlayGO() {
     setTimeout(function() {
         console.log("Восстанавливаем стрим");
         $("#l2sOffAnim").fadeIn(750);
-        $my_media.play();
+        window.plugins.streamingMedia.playAudio(audioUrl);
     }, 100);
 };
 
@@ -608,35 +622,8 @@ function LocalConfig() {
 };
  function LoadStream() {
         setTimeout(function() {
-            $my_media = new PlayStream(StreamGO(), function(status) {
-                    console.log("status - " + status);
-                    if (status === PlayStream.MEDIA_STOPPED) {
-                        console.log('stopped');
-                        MusicControls.updateIsPlaying(false);
-                        streamer = 1; 
-                        $(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
-                        $(".l3s").css("background-image", "url(img/play-l3-play.png)");
-                        $("#l2sOffAnim").fadeOut(750);
-                    }
-                    if (status === PlayStream.MEDIA_STARTING) {
-                        console.log('starting');
-                        MusicControls.updateIsPlaying(true);
-                        streamer = 2;
-                        $(".l3sAnim").css("background-color", "rgba(255,87,34,1)");
-                    }
-                    if (status === PlayStream.MEDIA_RUNNING) {
-                        console.log('running');
-                        MusicControls.updateIsPlaying(true);
-                        streamer = 3;
-                        $(".l3sAnim").css("background-color", "rgba(51,177,255,1)");
-                        $(".l3s").css("background-image", "url(img/play-l3-stop.png)");
-                        $("#l2sOffAnim").fadeIn(750);
-                    }
-                },
-                function(err) {
-                    alert(err);
-                }
-            );
+			var audioUrl = StreamGO();
+			window.plugins.streamingMedia.playAudio(audioUrl);
             var callmemabe = '1';
             PhoneCallTrap.onCall(function(state) {
 
@@ -646,11 +633,11 @@ function LocalConfig() {
                         console.log("Звонят");
                         if (streamer == "2") {
                             $("#l2sOffAnim").fadeOut(750);
-                            $my_media.stop();
+                            window.plugins.streamingMedia.stopAudio();
                             OneclickStop = 3;
                         } else if (streamer == "3") {
                             $("#l2sOffAnim").fadeOut(750);
-                            $my_media.stop();
+                            window.plugins.streamingMedia.stopAudio();
                             OneclickStop = 3;
                         }
                         callmemabe = '2';
@@ -660,11 +647,11 @@ function LocalConfig() {
                         console.log("Phone is off-hook");
                         if (streamer == "2") {
                             $("#l2sOffAnim").fadeOut(750);
-                            $my_media.stop();
+                            window.plugins.streamingMedia.stopAudio();
                             OneclickStop = 3;
                         } else if (streamer == "3") {
                             $("#l2sOffAnim").fadeOut(750);
-                            $my_media.stop();
+                            window.plugins.streamingMedia.stopAudio();
                             OneclickStop = 3;
                         }
                         callmemabe = '2';
@@ -677,14 +664,13 @@ function LocalConfig() {
                             setTimeout(function() {
                                 console.log("Восстанавливаем стрим");
                                 $("#l2sOffAnim").fadeIn(750);
-                                $my_media.play();
+                                window.plugins.streamingMedia.playAudio(audioUrl);
                                 OneclickStop = 2;
                             }, 3000);
                         };
                         break;
                 }
             });
-            $my_media.stop();
         }, 2000);
     }
 ons.ready(function() {
@@ -734,21 +720,21 @@ ons.ready(function() {
                 console.log('Пауза');
                 OneclickPlay = 1;
                 OneclickStop = 3;
-                $my_media.stop();
+                window.plugins.streamingMedia.stopAudio();
 
                 break;
             case 'music-controls-play':
                 console.log('Плей');
                 OneclickPlay = 2;
                 OneclickStop = 2;
-                $my_media.play();
+                window.plugins.streamingMedia.playAudio(audioUrl);
 
                 break;
             case 'music-controls-destroy':
                 console.log('Удалено');
                 OneclickPlay = 1;
                 OneclickStop = 3;
-                $my_media.stop();
+                window.plugins.streamingMedia.stopAudio();
 
                 break;
 
