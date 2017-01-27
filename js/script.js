@@ -553,9 +553,7 @@ document.addEventListener('deviceready', function () {
 	
 	
 	
-	
-	window.audioplayer.configure( successCallback, failureCallback);  
-	
+// StreamGO()
 
 
 var successCallback = function(result) {  
