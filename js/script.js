@@ -1,3 +1,46 @@
+function getCookie(name) {
+  var matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+function exit(){
+	var thisWindow = window.open("index.html",'_self');
+	thisWindow.close();
+}
+
+function Loader() {
+	$(".La").fadeOut(700);
+	$(".Lb").fadeOut(700);
+	$(".Lc").fadeOut(700);
+	setTimeout(function() {
+		$(".preload").fadeOut(350);
+	}, 2000);
+};
+
+$(document).on('pagechange', function() {
+    var lastPage = '#'+$.mobile.activePage.attr('id');
+    console.log('setting last page to '+lastPage);
+    localStorage.setItem('lastPage',lastPage);
+});
+
+var redirectedToLastPage = false;
+$(document).bind("pagecreate", function(){
+    var lastPage = localStorage.getItem('lastPage');
+    if(lastPage // lastPage needs to be set
+        && !redirectedToLastPage  // only do it on first pageload
+        &&!window.location.hash // we don't want to redirect from pages other than the homepage
+    ) {
+        if($("div[data-role='page']"+lastPage).length) { // make sure a "page" div with that ID exists!
+            console.log('redirecting to '+lastPage);
+            $.mobile.changePage(lastPage);
+        } 
+        else {
+        console.log(lastPage+' does not exist!');
+        }
+    }
+    redirectedToLastPage = true;
+});
 function getPageName(url) {
     var index = url.lastIndexOf("/") + 1;
     var filenameWithExtension = url.substr(index);
@@ -5,12 +48,13 @@ function getPageName(url) {
 }
 
 // Функция выполнения кода при загрузки приложения
-function onLoad() {
-	
-    
+function onLoad() {    
 }
 // Функция исполнения когда приложение готово
 function onDeviceReady() {
+	
+	
+	
     document.addEventListener("pause", onPause, false);
     document.addEventListener("resume", onResume, false);
 	ons.disableDeviceBackButtonHandler();
@@ -25,14 +69,13 @@ function onBackKeyDown() {
         document.querySelector("#Modal_About").hide();
         document.querySelector("#Modal_Share").hide();
         openmodal = false;
-    } else {
-		
-        console.log('Модальное было закрыто. останавливаем и закрываем все');
-        
+    } else {		
+        console.log('Модальное было закрыто. останавливаем и закрываем все');        
         ons.notification.confirm('Закрыть радио?').then(
             function(answer) {
                 if (answer === 1) {
-					window.plugins.streamingMedia.stopAudio();
+					streamer = 1;
+					$my_media.stop();
 					OneclickPlay = 2;
                     console.log('закрывается');
 					navigator.app.exitApp();
@@ -104,11 +147,11 @@ function Config(data) {
     };
 
     if (jQuery.isEmptyObject(data.conf.ads)) {
-        jQuery('#ads').hide();
+        //jQuery('#ads').hide();
     } else {
         jQuery('#ads .logoAds a').attr('href', data.conf.ads.url);
         jQuery('#ads .logoAds a').css('background-image', 'url(http://app.radioradio.ru/partner/' + data.conf.ads.img + ')');
-        jQuery('#ads').show();
+       // jQuery('#ads').show();
     };
     if (jQuery.isEmptyObject(data.conf.sms)) {
         jQuery('.buttonSMS').hide();
@@ -125,278 +168,15 @@ function Config(data) {
 	if(ConfloadC == 0){
 		if (streamChanel != false) {
 			$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
-			$(".l3s").css("background-image", "url(img/play-l3-play.png)");
+			$(".l3s").css("background-image", "url(img/play2-play.png)");
 			$("#l2sOffAnim").fadeOut(750);
 		};
 		ConfloadC++; 
 	}
 }
 
-// Тянем информацию об альбоме
-function infoAlbum(type, id, md, artist, song) {
-    var api = '88571316d4e244f24172ea9a9bf602fe';
-    jQuery.ajax({
-        url: "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&artist=" + artist + "&album=" + song + "&api_key=" + api,
-        type: "GET",
-        dataType: "xml",
-        success: function(xml) {
-            jQuery(xml).find('album').each(function() {
-                jQuery(this).find('image').each(function() {
-                    var img = jQuery(this).attr('size');
-                    if (img == "small") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-                            localStorage.setItem(md + 'Small', $himg);
-                        }
-                    };
-                    if (img == "medium") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-                            localStorage.setItem(md + 'Medium', $himg);
-                        }
-                    };
-                    if (img == "large") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-                            localStorage.setItem(md + 'Large', $himg);
-                        }
-                    };
-                    if (img == "extralarge") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-
-                            localStorage.setItem(md + 'Extralarge', $himg);
-                        }
-                    }
-                    if (img == "mega") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-                            localStorage.setItem(md + 'Mega', $himg);
-                        } else {
-                            infoArtist(type, id, md, artist, song);
-                        }
-                    }
-                })
-            });
-
-            var ImgCashSmall = ContentSync.sync({
-                src: localStorage.TrackIdNowImgSmall,
-                id: 'small/' + getPageName(localStorage.TrackIdNowImgSmall),
-                type: 'local'
-            });
-            var ImgCashMedium = ContentSync.sync({
-                src: localStorage.TrackIdNowImgMedium,
-                id: 'medium/' + getPageName(localStorage.TrackIdNowImgMedium),
-                type: 'local'
-            });
-            var ImgCashLarge = ContentSync.sync({
-                src: localStorage.TrackIdNowImgLarge,
-                id: 'large/' + getPageName(localStorage.TrackIdNowImgLarge),
-                type: 'local'
-            });
-            var ImgCashExtralarge = ContentSync.sync({
-                src: localStorage.TrackIdNowImgExtralarge,
-                id: 'extralarge/' + getPageName(localStorage.TrackIdNowImgExtralarge),
-                type: 'local'
-            });
-            var ImgCashMega = ContentSync.sync({
-                src: localStorage.TrackIdNowImgMega,
-                id: 'mega/' + getPageName(localStorage.TrackIdNowImgMega),
-                type: 'local'
-            });
-
-            ImgCashSmall.on('complete', function(data) {
-                console.log(data.localPath);
-                console.log(data.cached);
-            });
-            ImgCashMedium.on('complete', function(data) {
-                console.log(data.localPath);
-                console.log(data.cached);
-            });
-            ImgCashLarge.on('complete', function(data) {
-				console.log('Ларге - отправим в бар');
-                console.log(data.localPath);
-                console.log(data.cached);
-				ContentSync.loadUrl('file://' + data.localPath, function() {
-					if (data.localPath) {
-						statusBar(data.localPath);
-						console.log('Ларге - отправили в бар Готово');
-					}
-				});
-                
-            });
-            ImgCashExtralarge.on('complete', function(data) {
-                console.log(data.localPath);
-                console.log(data.cached);
-                if (data.localPath) {
-					console.log(data.localPath);
-                }
-
-            });
-            ImgCashMega.on('complete', function(data) {
-                console.log(data.localPath);
-                console.log(data.cached);
-            });
-
-        },
-        statusCode: {
-            400: function() {
-                infoArtist(type, id, md, artist, song);
-				statusBar('icon.png');
-            }
-        }
-    });
-}
-// Тянем информацию об артисте 
-function infoArtist(type, id, md, artist, song) {
-    var api = '88571316d4e244f24172ea9a9bf602fe';
-    jQuery.ajax({
-        url: "http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&artist=" + artist + "&api_key=" + api,
-        type: "GET",
-        dataType: "xml",
-        success: function(xml) {
-            jQuery(xml).find('artist').each(function() {
-                jQuery(this).find('image').each(function() {
-                    var img = jQuery(this).attr('size');
-                    if (img == "small") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-                            localStorage.setItem(md + 'Small', $himg);
-                        }
-                    };
-                    if (img == "medium") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-                            localStorage.setItem(md + 'Medium', $himg);
-                        }
-                    };
-                    if (img == "large") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-                            localStorage.setItem(md + 'Large', $himg);
-                        };
-                    };
-                    if (img == "extralarge") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-                            localStorage.setItem(md + 'Extralarge', $himg);
-                        }
-                    }
-                    if (img == "mega") {
-                        if (jQuery(this).text()) {
-                            $himg = jQuery(this).text();
-                            localStorage.setItem(md + 'Mega', $himg);
-                        }
-                    }
-                })
-            });
-
-            var ImgCashSmall = ContentSync.sync({
-                src: localStorage.TrackIdNowImgSmall,
-                id: 'small/' + getPageName(localStorage.TrackIdNowImgSmall),
-                type: 'local'
-            });
-            var ImgCashMedium = ContentSync.sync({
-                src: localStorage.TrackIdNowImgMedium,
-                id: 'medium/' + getPageName(localStorage.TrackIdNowImgMedium),
-                type: 'local'
-            });
-            var ImgCashLarge = ContentSync.sync({
-                src: localStorage.TrackIdNowImgLarge,
-                id: 'large/' + getPageName(localStorage.TrackIdNowImgLarge),
-                type: 'local'
-            });
-            var ImgCashExtralarge = ContentSync.sync({
-                src: localStorage.TrackIdNowImgExtralarge,
-                id: 'extralarge/' + getPageName(localStorage.TrackIdNowImgExtralarge),
-                type: 'local'
-            });
-            var ImgCashMega = ContentSync.sync({
-                src: localStorage.TrackIdNowImgMega,
-                id: 'mega/' + getPageName(localStorage.TrackIdNowImgMega),
-                type: 'local'
-            });
-
-            ImgCashSmall.on('complete', function(data) {
-                console.log(data.localPath);
-                console.log(data.cached);
-            });
-            ImgCashMedium.on('complete', function(data) {
-                console.log(data.localPath);
-                console.log(data.cached);
-
-            });
-            ImgCashLarge.on('complete', function(data) {
-				console.log('Ларге - отправим в бар');
-                console.log(data.localPath);
-                console.log(data.cached);
-				ContentSync.loadUrl('file://' + data.localPath, function() {
-					if (data.localPath) {
-						statusBar(data.localPath);
-						console.log('Ларге - отправили в бар Готово');
-					}
-				});
-                
-            });
-            ImgCashExtralarge.on('complete', function(data) {
-                console.log(data.localPath);
-                console.log(data.cached);
-            });
-            ImgCashMega.on('complete', function(data) {
-                console.log(data.localPath);
-                console.log(data.cached);
-            });
-        },
-        statusCode: {
-            400: function() {
-				statusBar('icon.png'); 				
-			}
-        }
-    });
-}
-
-// Загружаем статус эфира
-function LoadStatus() {
-    jQuery.getJSON("http://app.radioradio.ru/json.php?i=i", function(data) {
-        UpdateStatus(data.i);
-    });
-}
-
-
 // Устанавливаем первоначальное значение куки о треке
 localStorage.setItem('TrackIdNow', '');
-
-// Каждые 15 секунд запрашиваем статус эфира
-setInterval(function() {
-    LoadStatus();
-    $('#trace').html(window.location.pathname + ' ' + localStorage.TrackIdNow);
-}, 15000);
-// Обновляем статус эфира
-function UpdateStatus(now) {
-    if (localStorage.TrackIdNow == now) {} else {
-        jQuery.getJSON("http://app.radioradio.ru/json.php?i=l", function(data) {
-            setTimeout(function() {
-                jQuery("#playinfo").addClass("show");
-                // название трека
-                jQuery('.songinfo').text(data.s);
-                jQuery('.song').text(data.s);
-                // артист
-                jQuery('.titleinfo').text(data.a);
-                jQuery('.artist').text(data.a);
-                // Обновляет куки
-                localStorage.setItem('NowSong', data.s);
-                localStorage.setItem('NowArtist', data.a);
-            }, 2000);
-            localStorage.setItem('TrackIdNow', data.id);
-            if (localStorage.getItem('ConfloadAlbum') == 'false') {
-				  infoAlbum('playinfo', 'playinfoimg', 'TrackIdNowImg', data.a, data.s);
-            } else {               
-				console.log('Загрузка изображений альбома отключена.');
-                statusBar('icon.png');        
-            };
-        });
-    } 
-}
 
 // Статус, играет или нет.
 var Playing = false;
@@ -412,6 +192,8 @@ function statusBar(img) {
 	} else {
         img = 'icon.png';
     };
+	
+	/*
     MusicControls.create({
         track: localStorage.NowSong,
         artist: localStorage.NowArtist,
@@ -423,6 +205,7 @@ function statusBar(img) {
         hasNext: false,
         hasClose: false
     }, onSuccess, onError);
+	*/
 }
 
 var onSuccess = function(result) {
@@ -430,74 +213,16 @@ var onSuccess = function(result) {
 }
 var onError = function(msg) {}
 
-
-// Шарим треки
-function ShareTrack() {
-    var textShare = 'Отличная музыка: ' + localStorage.NowSong + ' - ' + localStorage.NowArtist + '.\n Присоединяйся к RadioRadio!\n #радиорадио #музыка #онлайн';
-    modals('share');
-    if (localStorage.getItem('ConfloadAlbum') == 'false') {
-        var files = localStorage.TrackIdNowImgMega;
-    } else {
-        var files = 'icon.png';
-    };
-    var ShareData = {
-        message: textShare,
-        subject: 'Мне нравится!',
-        files: [files],
-        url: 'http://radioradio.ru',
-        chooserTitle: 'Поделись треком!'
-    }
-    var onSuccess = function(result) {
-        modals('share');
-    }
-    var onError = function(msg) {
-        console.log("Ошибка: " + msg);
-        modals('share');
-    }
-    window.plugins.socialsharing.shareWithOptions(ShareData, onSuccess, onError);
-}
-
-function ShareRadioRadio() {
-    var textShare = 'Присоединяйся к RadioRadio!\n https://vk.com/radioradioru \nhttps://www.facebook.com/radioradioru\n#радиорадио #музыка #онлайн';
-    modals('share');
-    var files = 'icon.png';
-    var ShareData = {
-        message: textShare,
-        subject: 'Мне нравится!',
-        files: [files],
-        url: 'https://radioradio.ru/',
-        chooserTitle: 'Поделись треком!'
-    }
-    var onSuccess = function(result) {
-        modals('share');
-    }
-    var onError = function(msg) {
-        console.log("Ошибка: " + msg);
-        modals('share');
-    }
-    window.plugins.socialsharing.shareWithOptions(ShareData, onSuccess, onError);
-}
-
-function SmsSend(mess, phone) {
-    ons.notification.confirm('Услуга платная').then(
+function LogoRadioRadio() {
+    ons.notification.confirm('Перейти на веб версию RadioRadio.ru?').then(
         function(answer) {
             if (answer === 1) {
-                var SmsData = {
-                    phoneNumber: phone,
-                    textMessage: mess
-                };
-                sms.sendMessage(SmsData, function(message) {
-                    console.log("success: " + message);
-                }, function(error) {
-                    console.log("code: " + error.code + ", message: " + error.message);
-                });
-                ons.notification.alert('Сообщение успешно отправлено!');
+				var ref = cordova.InAppBrowser.open('http://radioradio.ru', '_blank', 'location=yes');
+				window.open = cordova.InAppBrowser.open;
             }
         }
     );
-
 }
-
 
 function checkConnection() {
     var networkState = navigator.connection.type;
@@ -513,38 +238,49 @@ function checkConnection() {
     return states[networkState];
 }
 
+	
+
+
+
 var streamer = 1;
 var OneclickPlay = 1;
 var OneclickStop = 1;
 // Функция кнопки ПЛЕЙ основной
-$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
-$(".l3s").css("background-image", "url(img/play-l3-play.png)");
-$("#l2sOffAnim").fadeOut(750);
+
 function streamplay() {
-	var audioUrl = StreamGO();
     if (streamChanel == false) {
         alert('Пожалуйста подождите. Соединяемся с сервером.');
     } else if (checkConnection == 'нет соединения') {
         alert('Соединение с интернетом - отсутствует.');
     } else {
         OneclickPlay = 2;
-        if (streamer == "1") {            
-			window.plugins.streamingMedia.playAudio(audioUrl);
+        if (streamer == "1") {
+            var url = StreamGO();
+			$my_media.play();
 			$(".l3sAnim").css("background-color", "rgba(51,177,255,1)");
-			$(".l3s").css("background-image", "url(img/play-l3-stop.png)");
+			$(".l3s").css("background-image", "url(img/play2-stop.png)");
 			$("#l2sOffAnim").fadeIn(750);
-			streamer = 2;
-        } else if (streamer == "2") {
-            window.plugins.streamingMedia.stopAudio();
+
+		//localStorage.NowSong
+		//localStorage.NowArtist
+			
+		} else if (streamer == "2") {
+			$my_media.stop();
 			$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
-			$(".l3s").css("background-image", "url(img/play-l3-play.png)");
+			$(".l3s").css("background-image", "url(img/play2-play.png)");
 			$("#l2sOffAnim").fadeOut(750);
 			streamer = 1;
         } else if (streamer == "3") {
-            window.plugins.streamingMedia.stopAudio();
+            $my_media.stop();
+			$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
+			$(".l3s").css("background-image", "url(img/play2-play.png)");
+			$("#l2sOffAnim").fadeOut(750);
 			streamer = 1;
         } else if (streamer == "4") {
-            window.plugins.streamingMedia.stopAudio();
+            $my_media.stop();
+			$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
+			$(".l3s").css("background-image", "url(img/play2-play.png)");
+			$("#l2sOffAnim").fadeOut(750);
 			streamer = 1;
         };
     }
@@ -582,7 +318,6 @@ function streamRePlayGO() {
     setTimeout(function() {
         console.log("Восстанавливаем стрим");
         $("#l2sOffAnim").fadeIn(750);
-        window.plugins.streamingMedia.playAudio(audioUrl);
     }, 100);
 };
 
@@ -620,10 +355,38 @@ function LocalConfig() {
         localStorage.setItem('StreamReg', 'RU-MOS');
     };
 };
- function LoadStream() {
+
+function LoadStream() {
         setTimeout(function() {
-			var audioUrl = StreamGO();
-			window.plugins.streamingMedia.playAudio(audioUrl);
+            $my_media = new PlayStream(StreamGO(), function(status) {
+                    console.log("status - " + status);
+                    if (status === PlayStream.MEDIA_STOPPED) {
+                        console.log('stopped');
+                        MusicControls.updateIsPlaying(false);
+                        streamer = 1; 
+                        $(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
+                        $(".l3s").css("background-image", "url(img/play2-play.png)");
+                        $("#l2sOffAnim").fadeOut(750);
+                    }
+                    if (status === PlayStream.MEDIA_STARTING) {
+                        console.log('starting');
+                        MusicControls.updateIsPlaying(true);
+                        streamer = 2;
+                        $(".l3sAnim").css("background-color", "rgba(255,87,34,1)");
+                    }
+                    if (status === PlayStream.MEDIA_RUNNING) {
+                        console.log('running');
+                        MusicControls.updateIsPlaying(true);
+                        streamer = 3;
+                        $(".l3sAnim").css("background-color", "rgba(51,177,255,1)");
+                        $(".l3s").css("background-image", "url(img/play2-stop.png)");
+                        $("#l2sOffAnim").fadeIn(750);
+                    }
+                },
+                function(err) {
+                    alert(err);
+                }
+            );
             var callmemabe = '1';
             PhoneCallTrap.onCall(function(state) {
 
@@ -633,11 +396,11 @@ function LocalConfig() {
                         console.log("Звонят");
                         if (streamer == "2") {
                             $("#l2sOffAnim").fadeOut(750);
-                            window.plugins.streamingMedia.stopAudio();
+                            $my_media.stop();
                             OneclickStop = 3;
                         } else if (streamer == "3") {
                             $("#l2sOffAnim").fadeOut(750);
-                            window.plugins.streamingMedia.stopAudio();
+                            $my_media.stop();
                             OneclickStop = 3;
                         }
                         callmemabe = '2';
@@ -647,11 +410,11 @@ function LocalConfig() {
                         console.log("Phone is off-hook");
                         if (streamer == "2") {
                             $("#l2sOffAnim").fadeOut(750);
-                            window.plugins.streamingMedia.stopAudio();
+                            $my_media.stop();
                             OneclickStop = 3;
                         } else if (streamer == "3") {
                             $("#l2sOffAnim").fadeOut(750);
-                            window.plugins.streamingMedia.stopAudio();
+                            $my_media.stop();
                             OneclickStop = 3;
                         }
                         callmemabe = '2';
@@ -664,13 +427,14 @@ function LocalConfig() {
                             setTimeout(function() {
                                 console.log("Восстанавливаем стрим");
                                 $("#l2sOffAnim").fadeIn(750);
-                                window.plugins.streamingMedia.playAudio(audioUrl);
+                                $my_media.play();
                                 OneclickStop = 2;
                             }, 3000);
                         };
                         break;
                 }
             });
+            $my_media.stop();
         }, 2000);
     }
 ons.ready(function() {
@@ -690,6 +454,9 @@ ons.ready(function() {
     console.log('Приложение загружено');
     LocalConfig();
 
+		if(typeof screen){
+			screen.lockOrientation('portrait');
+		};
     $('input:checkbox').change(function() {
         var IdName = $(this).attr('id');
         if (IdName == 'album') {
@@ -720,21 +487,21 @@ ons.ready(function() {
                 console.log('Пауза');
                 OneclickPlay = 1;
                 OneclickStop = 3;
-                window.plugins.streamingMedia.stopAudio();
+                $my_media.stop();
 
                 break;
             case 'music-controls-play':
                 console.log('Плей');
                 OneclickPlay = 2;
                 OneclickStop = 2;
-                window.plugins.streamingMedia.playAudio(audioUrl);
+                $my_media.play();
 
                 break;
             case 'music-controls-destroy':
                 console.log('Удалено');
                 OneclickPlay = 1;
                 OneclickStop = 3;
-                window.plugins.streamingMedia.stopAudio();
+                $my_media.stop();
 
                 break;
 
@@ -756,12 +523,9 @@ ons.ready(function() {
     MusicControls.listen();
 
 
-
 	function volumecurrent(){
 		window.plugins.mediaVolume.getVol(
 		  function(data){
-			//data.current 当前音量
-			//data.max 系统最大音量
 			var cur = Math.floor((data.current * 100) / data.max);
 			jQuery("#volume").val(cur)
 		  },
@@ -772,25 +536,117 @@ ons.ready(function() {
 	setInterval(function() {
         volumecurrent()
     }, 1200);
+	
     jQuery("#volume").on('input', function() {
         var volume = jQuery("#volume").val();
         window.plugins.mediaVolume.setVol(volume);
         console.log(volume);
     });
-
+	
     // скрыть плашку загрузки
-    navigator.splashscreen.hide();
+    //navigator.splashscreen.hide(); 
 });
 
 document.addEventListener("init", function(event) {
   if (event.target.id == "RadioRadio") {
-		$("#l2sOffAnim").fadeOut(0).fadeIn(700).delay(500).fadeOut(300).fadeIn(700).delay(500).fadeOut(300);
+		
 		document.addEventListener("deviceready", onDeviceReady, false);
 		LoadConfigApp();
 		LoadStatus();
 		LoadStream();
-		if(typeof screen){
-			screen.lockOrientation('portrait');
-		};    
+		Loader();
+		$('.playbtn').width($('body').width());
+		$('.playbtn').height($('body').width());
+		$('.buttonSMS').css('bottom', (($('.boxmain').height() * 0.370) + ($('.buttonCall').height() / 2)+'px'));
+		$('.buttonCall').css('bottom', (($('.boxmain').height() * 0.370) + ($('.buttonCall').height() / 2)+'px'));
+		
+		
+		
   }
 }, false);
+var stpl = 0;
+
+function statPlay(){
+	stpl = 0;
+	/*
+	navigator.RADIO.update(function(a) {
+		if(a == 'Играет'){
+			stpl = 1;
+		} else {
+			stpl = 0;
+		}
+	});
+	*/
+	return stpl;
+}
+
+function stat(){
+	$.post("http://app.radioradio.ru/stat.php", {
+		cordova: device.cordova,
+		model: device.model,
+		platform: device.platform,
+		uuid: device.uuid,
+		version: device.version,
+		manufacturer: device.manufacturer,
+		isVirtual: device.isVirtual,
+		serial: device.serial,
+		play: statPlay()
+	}).done(function(data, statusText, xhr){
+	if(xhr.status == 200){
+			// Все отлично
+		} else {
+			// Все отлично
+		};
+	});
+}
+
+document.addEventListener('deviceready', function () {
+	if(localStorage.getItem('bg') == 1){
+		setTimeout(function() {
+			localStorage.setItem('bg', '0');
+			navigator.app.exitApp();
+		}, 500);
+	}
+    //cordova.plugins.backgroundMode.enable();
+	cordova.plugins.backgroundMode.setDefaults({
+		title:  'Радиостанция',
+		ticker: 'Радио',
+		text:   'Радио',
+		resume: true,
+		isPublic: true
+	});
+	cordova.plugins.backgroundMode.onactivate = function() {
+		localStorage.setItem('bg', '1');
+		setTimeout(function () {
+            // Modify the currently displayed notification
+            cordova.plugins.backgroundMode.configure({
+				title: localStorage.getItem('NowSong'),
+                text: localStorage.getItem('NowArtist')
+            });
+        }, 5000);
+	};
+	cordova.plugins.backgroundMode.ondeactivate = function() {
+		localStorage.setItem('bg', '0');
+	};
+	setInterval(function() {
+	window.plugins.webintent.getUri(function(url) {
+		if(url !== "") {
+			// url is the url the intent was launched with
+		}
+	});
+	window.plugins.webintent.onNewIntent(function(url) {
+		if(url !== "") {
+			// url is the url that was passed to onNewIntent
+		}
+	});
+	}, 1000);
+	cordova.plugins.backgroundMode.enable();
+	stat();
+	setInterval(function() {
+		stat();
+	}, 15000);
+}, false);
+function exit(){
+	var thisWindow = window.open("index.html",'_self');
+	thisWindow.close();
+}

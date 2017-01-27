@@ -1,8 +1,8 @@
 ﻿.logo
     width: 10em
-    height: 5em
+    height: 4em
     margin: 0px auto
-    background-image: url(../../logo/3.png)
+    background-image: url(../../logo/6.png) 
     background-size: contain
     background-repeat: no-repeat
     background-position: 50%
@@ -10,12 +10,21 @@
 	
 .logoAds a
     width: 10em
-    height: 6em
+    height: 5em
     margin: 0px auto
     background-size: contain
     background-repeat: no-repeat
     background-position: 50%	
     display: block
+	
+.logo_wrap_play
+	position: absolute
+	width: 100% 
+	top: 0 
+	z-index: 30
+
+.logo_wrap_play .logo
+	width: 70%
 	
 // Вертикальная сетка формирования
 .vert_grid
@@ -47,7 +56,7 @@
 
 .song
   font-size 1em
-  font-weight 700
+  font-weight 400
   line-height 1em
   display block
   width 100%
@@ -72,6 +81,7 @@
 	background-image: url(../../img/play-l1.png)
 	z-index: 1
 	background-size: cover
+	display: none
 
 .playbtn .l2s
 	width: 100%
@@ -94,6 +104,7 @@
 	background-image: url(../../img/play-l2u.png) 
 	z-index: 3
 	background-size: cover
+	display: none
 	
 .playbtn #l2sOffAnim
 	width: calc(100% - 8%)
@@ -105,8 +116,8 @@
 
 	margin: 4%
 	border-radius: 50%
-	background-color: #2fa8fd;
-	display: none;
+	background-color: #2fa8fd
+	display: none !important
 
 	
 .playbtn .l3sAnim
@@ -119,6 +130,7 @@
 	left: 0px
 	background-color: rgba(255,87,34,1)
 	z-index: 8
+	display: none
 	
 .playbtn .l3s
 	width: 100%
@@ -128,7 +140,10 @@
 	left: 0px
 	background-image: url(../../img/play-l3-load.png) 
 	z-index: 10
-	background-size: cover
+	background-size: 112%
+	background-position-x: 40%
+	background-position-y: 70%
+	background-repeat: no-repeat
 
 .playbtn .l4s
 	width: 100%
@@ -140,29 +155,52 @@
 	z-index: 5
 	background-size: cover
 	display: none;
+
+.playbtn .playZone
+	width: 50%
+	height: 50%
+	display: block
+	z-index: 20
+	position: relative
+	margin: auto
+	top: 25%
+	cursor: pointer
+
+.prestatus 
+    color: #c2c2c2
+    text-shadow: 0 1px 0 #ffffff
+    text-align: center
+    margin: -1rem 0rem 0rem 0rem
 	
 #poll
 	display: none
+	z-index: 10
 	
-#ads
-	display: none
+	
+//#ads
+//	display: none
 	
 #volume
-	width: 50%
+	width: 65%
 	position: relative
-	height: 0.2em
+	height: 1vh
+	margin-left: 1.1em 
+	z-index: 10
 	
 .poll_text
-	padding 0em 1em 1em 
+	padding 1em
 	margin 0
+	padding-bottom 0
 	
-	
+.poll_ex
+	padding-bottom 1em	
+	 
 #volume i
     position: absolute;
-    left: -1.5em;
-    color: rgba(255,255,255,0.5);
-    top: -0.42em;
-    font-size: 1.3em;
+    left: -1.1em;
+    color: #c2c2c2;
+    top: -2.5vh;
+    font-size: 6vh;
 
 .OnlineCall
 	position absolute
@@ -170,30 +208,56 @@
 	right -70%
 	text-align center
 	font-size 0.8em
-	color #ffffff
+	color #a1a1a1
 	text-decoration inherit
 	
 .OnlineCall i
-	color #f00
+	color #a1a1a1
 	display block
 	font-size 2em
 
 .buttonSMS
 	position absolute
-	color rgb(250, 176, 50)
+	color #a1a1a1
 	display none
-	
+	z-index: 50;
 .buttonSMS a
-	color rgb(250, 176, 50)
+	color #a1a1a1
+	font-size 5.5vw
 	
 .buttonCall
 	position absolute
-	color #f00
+	color #a1a1a1
+	display none
+	z-index: 50;
+.buttonCall a
+	color #a1a1a1
+	font-size 5.5vw
+
+.fab__icon
+	font-size 5.5vw
+	
+ons-splitter:before
+	content ' '
+	position absolute
+	top 0%
+	left 50%
+	width 1px
+	background-color #f00
+	height 100%
+	z-index 100
 	display none
 	
-.buttonCall a
-	color #f00
-
+ons-splitter:after
+	content ' '
+	position absolute
+	top 50%
+	width 100%
+	background-color #f00
+	height 1px
+	z-index 100
+	display none
+	
 @media all and (-webkit-min-device-pixel-ratio: 1)
 	@media (max-width: 320px)
     .page
