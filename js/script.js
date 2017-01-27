@@ -59,6 +59,7 @@ function onDeviceReady() {
     document.addEventListener("resume", onResume, false);
 	ons.disableDeviceBackButtonHandler();
     document.addEventListener("backbutton", onBackKeyDown, false);
+
 	
 }
 // Функция при нажатии кнопки НАЗАД
@@ -357,86 +358,7 @@ function LocalConfig() {
 };
 
 function LoadStream() {
-        setTimeout(function() {
-            $my_media = new PlayStream(StreamGO(), function(status) {
-                    console.log("status - " + status);
-                    if (status === PlayStream.MEDIA_STOPPED) {
-                        console.log('stopped');
-                        MusicControls.updateIsPlaying(false);
-                        streamer = 1; 
-                        $(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
-                        $(".l3s").css("background-image", "url(img/play2-play.png)");
-                        $("#l2sOffAnim").fadeOut(750);
-                    }
-                    if (status === PlayStream.MEDIA_STARTING) {
-                        console.log('starting');
-                        MusicControls.updateIsPlaying(true);
-                        streamer = 2;
-                        $(".l3sAnim").css("background-color", "rgba(255,87,34,1)");
-                    }
-                    if (status === PlayStream.MEDIA_RUNNING) {
-                        console.log('running');
-                        MusicControls.updateIsPlaying(true);
-                        streamer = 3;
-                        $(".l3sAnim").css("background-color", "rgba(51,177,255,1)");
-                        $(".l3s").css("background-image", "url(img/play2-stop.png)");
-                        $("#l2sOffAnim").fadeIn(750);
-                    }
-                },
-                function(err) {
-                    alert(err);
-                }
-            );
-            var callmemabe = '1';
-            PhoneCallTrap.onCall(function(state) {
-
-                console.log("CHANGE STATE: " + state + " " + callmemabe);
-                switch (state) {
-                    case "RINGING":
-                        console.log("Звонят");
-                        if (streamer == "2") {
-                            $("#l2sOffAnim").fadeOut(750);
-                            $my_media.stop();
-                            OneclickStop = 3;
-                        } else if (streamer == "3") {
-                            $("#l2sOffAnim").fadeOut(750);
-                            $my_media.stop();
-                            OneclickStop = 3;
-                        }
-                        callmemabe = '2';
-
-                        break;
-                    case "OFFHOOK":
-                        console.log("Phone is off-hook");
-                        if (streamer == "2") {
-                            $("#l2sOffAnim").fadeOut(750);
-                            $my_media.stop();
-                            OneclickStop = 3;
-                        } else if (streamer == "3") {
-                            $("#l2sOffAnim").fadeOut(750);
-                            $my_media.stop();
-                            OneclickStop = 3;
-                        }
-                        callmemabe = '2';
-                        break;
-
-                    case "IDLE":
-                        console.log("Телефон свободен: " + streamer + " " + callmemabe + " " + OneclickPlay);
-                        if (streamer == "1" && callmemabe == '2' && OneclickPlay == "2") {
-                            console.log("Восстанавливаем стрим через 3 секунды");
-                            setTimeout(function() {
-                                console.log("Восстанавливаем стрим");
-                                $("#l2sOffAnim").fadeIn(750);
-                                $my_media.play();
-                                OneclickStop = 2;
-                            }, 3000);
-                        };
-                        break;
-                }
-            });
-            $my_media.stop();
-        }, 2000);
-    }
+}
 ons.ready(function() {
 	
 	setInterval(function() {
@@ -487,21 +409,21 @@ ons.ready(function() {
                 console.log('Пауза');
                 OneclickPlay = 1;
                 OneclickStop = 3;
-                $my_media.stop();
+
 
                 break;
             case 'music-controls-play':
                 console.log('Плей');
                 OneclickPlay = 2;
                 OneclickStop = 2;
-                $my_media.play();
+
 
                 break;
             case 'music-controls-destroy':
                 console.log('Удалено');
                 OneclickPlay = 1;
                 OneclickStop = 3;
-                $my_media.stop();
+
 
                 break;
 
@@ -628,6 +550,35 @@ document.addEventListener('deviceready', function () {
 	cordova.plugins.backgroundMode.ondeactivate = function() {
 		localStorage.setItem('bg', '0');
 	};
+	
+	
+	
+	
+	window.audioplayer.configure( successCallback, failureCallback);  
+	
+
+
+var successCallback = function(result) {  
+  console.log('audio callback ' + JSON.stringify(result));  
+  if (result.type==='progress') {  
+    console.log('progress/duration/available - ' + result.progress + '/' + result.duration + '/' + result.available); // available not currently supported  
+  } else if (result.type==='state') {  
+    console.log('status - ' + result.state + '/' + result.description);  
+  } else if (result.type==='error') {  
+    console.log('error - ' + result.reason);  
+  } else if (result.type==='current') {  
+    console.log('current audio ' + JSON.stringify(result.audio));  
+  } else if (result.type==='next') {  
+    console.log('skip to next audio track'); // typically fired by remote control/lock screen controls  
+  } else if (result.type==='previous') {  
+    console.log('skip to previous track'); // typically fired by remote/control/lock screen controls
+  } else {  
+    console.log('AudioCallback unhandled type (' + result.type + ')');  
+  }  
+};  
+	
+	
+	
 	setInterval(function() {
 	window.plugins.webintent.getUri(function(url) {
 		if(url !== "") {
