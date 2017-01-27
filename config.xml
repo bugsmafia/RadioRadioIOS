@@ -67,8 +67,8 @@
 	</platform>
 	<icon src="resources/icon.png"/>
 	<!--<plugin spec="https://github.com/bugsmafia/cordova-plugin-stream-aac.git" source="git" /> -->
-	<plugin spec="https://github.com/PRX/PlayerHater" source="git" />
-	<plugin spec="https://github.com/wnyc/cordova-plugin-playerhater" source="git" />
+
+	<plugin spec="https://github.com/apache/cordova-plugin-media" source="git" />
 	
 	<plugin spec="https://github.com/apache/cordova-plugin-statusbar.git" source="git" />
 	<preference name="StatusBarOverlaysWebView" value="true" />
