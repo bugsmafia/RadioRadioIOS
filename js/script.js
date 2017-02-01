@@ -557,18 +557,33 @@ document.addEventListener('deviceready', function () {
 
 function playAudio(url) {
     // Play the audio file at url
-    var my_media = new Media(url,
+	alert('Получено MP3. Считай секунды. Сообщи и я остановлю стрим. Жми ОК')
+    var my_media = new Media('http://play.radioradio.ru/mp3',
         // success callback
-        function () {
-            console.log("playAudio():Audio Success");
-        },
+        function () { console.log("playAudio():Audio Success"); },
         // error callback
-        function (err) {
-            console.log("playAudio():Audio Error: " + err);
-        }
+        function (err) { console.log(err); }
     );
-    // Play audio
 
+    // Play audio
+    my_media.play();
+	alert('Команда СТОП. Жми ОК')
+	my_media.stop();
+	alert('Получено AAC. Еще раз попробуем ААС+ Жми ОК')
+    var my_media = new Media('http://play.radioradio.ru/32',
+        // success callback
+        function () { console.log("playAudio():Audio Success"); },
+        // error callback
+        function (err) { console.log(err); }
+    );
+
+    // Play audio
+    my_media.play();
+
+    // Pause after 10 seconds
+    setTimeout(function () {
+        my_media.pause();
+    }, 20000);
 }
 //playAudio(StreamGO())
 

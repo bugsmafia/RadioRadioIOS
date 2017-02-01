@@ -5391,7 +5391,7 @@ input[type="search"].search-input::-webkit-search-cancel-button {
   pointer-events: none;
 }
 .fab--top__right {
-  top: 4.69vw;
+  top: 9.69vw;
   bottom: auto;
   right: 4.69vw;
   position: fixed;
@@ -5405,7 +5405,7 @@ input[type="search"].search-input::-webkit-search-cancel-button {
   position: fixed;
 }
 .fab--top__left {
-  top: 4.69vw;
+  top: 9.69vw;
   bottom: auto;
   right: auto;
   left: 4.69vw;
