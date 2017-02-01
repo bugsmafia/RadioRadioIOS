@@ -134,10 +134,10 @@ function LoadConfigApp() {
 
 var ConfloadC = 0;
 function SmsSend(text, phone){
-	ons.notification.confirm('Для участия в опросе, отправте СМС c текстом <'+text+'> на короткий номер '+phone+'').then(
+	ons.notification.confirm('Для участия в опросе, отправь СМС c текстом <'+text+'> на короткий номер '+phone+'').then(
             function(answer) {
                 if (answer === 1) {
-					window.location = "sms://"+phone+"?body="+text+"";
+					window.location = "sms:"+phone+"?body="+text+"";
                 }
             }
         );
@@ -566,38 +566,15 @@ document.addEventListener('deviceready', function () {
 	
 // StreamGO()
 
-function playAudio(url) {
-    // Play the audio file at url
-	alert('Получено MP3. Считай секунды. Сообщи и я остановлю стрим. Жми ОК')
-    var my_media = new Media('http://play.radioradio.ru/mp3',
-        // success callback
-        function () { console.log("playAudio():Audio Success"); },
-        // error callback
-        function (err) { console.log(err); }
-    );
-
-    // Play audio
-    my_media.play();
-	alert('Команда СТОП. Жми ОК')
-	my_media.stop();
-	alert('Получено AAC. Еще раз попробуем ААС+ Жми ОК')
-    var my_media = new Media('http://play.radioradio.ru/32',
-        // success callback
-        function () { console.log("playAudio():Audio Success"); },
-        // error callback
-        function (err) { console.log(err); }
-    );
-
-    // Play audio
-    my_media.play();
-
-    // Pause after 10 seconds
-    setTimeout(function () {
-        my_media.pause();
-    }, 20000);
-}
 //playAudio(StreamGO())
-
+$my_media = new Media(StreamGO(),
+	function () {
+		console.log("playAudio():Audio Success");
+	},
+	function (err) {
+		console.log(err);
+	}
+);
 var successCallback = function(result) {  
   console.log('audio callback ' + JSON.stringify(result));  
   if (result.type==='progress') {  
