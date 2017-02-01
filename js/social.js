@@ -45,7 +45,7 @@ function ShareRadioRadio() {
     window.plugins.socialsharing.shareWithOptions(ShareData, onSuccess, onError);
 }
 
-
+/*
 function SmsSend(mess, phone) {
     ons.notification.confirm('Услуга платная').then(
         function(answer) {
@@ -64,3 +64,4 @@ function SmsSend(mess, phone) {
         }
     );
 }
+*/

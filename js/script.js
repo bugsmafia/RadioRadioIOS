@@ -133,6 +133,17 @@ function LoadConfigApp() {
 }
 
 var ConfloadC = 0;
+function SmsSend(text, phone){
+	ons.notification.confirm('Для участия в опросе, отправте СМС c текстом <'+text+'> на короткий номер '+phone+'').then(
+            function(answer) {
+                if (answer === 1) {
+					window.location = "sms://"+phone+"?body="+text+"";
+                }
+            }
+        );
+	
+}
+
 function Config(data) {
     data = JSON.parse(data);
     streamChanel = data.stream;
@@ -157,7 +168,7 @@ function Config(data) {
     if (jQuery.isEmptyObject(data.conf.sms)) {
         jQuery('.buttonSMS').hide();
     } else {
-        jQuery('.smsact').attr('href', data.conf.sms);
+        jQuery('.smsact').attr('href', 'sms://'+data.conf.sms);
         jQuery('.buttonSMS').show();
     };
     if (jQuery.isEmptyObject(data.conf.phone)) {
