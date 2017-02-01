@@ -5638,12 +5638,12 @@ input[type="search"].search-input::-webkit-search-cancel-button {
   z-index: 10;
 }
 .poll_text {
-  padding: 1em;
+  padding: 0em;
   margin: 0;
   padding-bottom: 0;
 }
 .poll_ex {
-  padding-bottom: 1em;
+  padding-top: 0.5em;
 }
 #volume i {
   position: absolute;
