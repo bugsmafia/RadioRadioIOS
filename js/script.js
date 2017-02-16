@@ -254,7 +254,7 @@ function checkConnection() {
 
 
 
-var streamer = 1;
+var streamer = 0;
 var OneclickPlay = 1;
 var OneclickStop = 1;
 // Функция кнопки ПЛЕЙ основной
@@ -266,34 +266,20 @@ function streamplay() {
         alert('Соединение с интернетом - отсутствует.');
     } else {
         OneclickPlay = 2;
-        if (streamer == "1") {
-            var url = StreamGO();
+	
+		if (streamer == "0") {
 			$my_media.play();
-			$(".l3sAnim").css("background-color", "rgba(51,177,255,1)");
-			$(".l3s").css("background-image", "url(img/play2-stop.png)");
-			$("#l2sOffAnim").fadeIn(750);
-
-		//localStorage.NowSong
-		//localStorage.NowArtist
-			
+		} else if (streamer == "1"){
+			// буферизация потока		
 		} else if (streamer == "2") {
+			// Поток запущен
 			$my_media.stop();
-			$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
-			$(".l3s").css("background-image", "url(img/play2-play.png)");
-			$("#l2sOffAnim").fadeOut(750);
-			streamer = 1;
         } else if (streamer == "3") {
-            $my_media.stop();
-			$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
-			$(".l3s").css("background-image", "url(img/play2-play.png)");
-			$("#l2sOffAnim").fadeOut(750);
-			streamer = 1;
+			// Пауза
+			$my_media.play();
         } else if (streamer == "4") {
-            $my_media.stop();
-			$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
-			$(".l3s").css("background-image", "url(img/play2-play.png)");
-			$("#l2sOffAnim").fadeOut(750);
-			streamer = 1;
+            // Остановлено
+			$$my_media.play();
         };
     }
 }
@@ -573,6 +559,27 @@ $my_media = new Media(StreamGO(),
 	},
 	function (err) {
 		console.log(err);
+	},
+	function (mediaStatus) {
+		console.log(mediaStatus);
+		streamer = mediaStatus;
+		
+		if (streamer == "0") {
+			// Нулевая позиция. ничего нет
+			$(".l3s").css("background-image", "url(img/play2-play.png)");
+		} else if (streamer == "1"){
+			// буферизация потока
+			$(".l3s").css("background-image", "url(img/play2-stop.png)");
+		} else if (streamer == "2") {
+			// Поток запущен
+			$(".l3s").css("background-image", "url(img/play2-stop.png)");
+        } else if (streamer == "3") {
+			// Пауза
+			$(".l3s").css("background-image", "url(img/play2-play.png)");
+        } else if (streamer == "4") {
+            // Остановлено
+			$(".l3s").css("background-image", "url(img/play2-play.png)");
+        };
 	}
 );
 var successCallback = function(result) {  
