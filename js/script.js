@@ -564,22 +564,26 @@ function my_media(){
 				// Получение медиа было прервано
 				streamer = "0";
 				$(".l3s").css("background-image", "url(img/play2-play.png)");
+				my_media();
 			};
 			if(err == "2"){
 				// Проблемы с интернет соединением
 				streamer = "0";
 				$(".l3s").css("background-image", "url(img/play2-play.png)");
+				my_media();
 			};
 			if(err == "3"){
 				// Кодек не поддерживается
 				streamer = "0";
 				$(".l3s").css("background-image", "url(img/play2-play.png)");
+				my_media();
 				
 			};
 			if(err == "4"){
 				// Не поддерживается
 				streamer = "0";
 				$(".l3s").css("background-image", "url(img/play2-play.png)");
+				my_media();
 			};
 		},
 		function (mediaStatus) {
