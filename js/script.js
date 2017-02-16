@@ -279,7 +279,8 @@ function streamplay() {
 			$my_media.play();
         } else if (streamer == "4") {
             // Остановлено
-			$$my_media.play();
+			my_media();
+			$my_media.play();
         };
     }
 }
@@ -553,35 +554,58 @@ document.addEventListener('deviceready', function () {
 // StreamGO()
 
 //playAudio(StreamGO())
-$my_media = new Media(StreamGO(),
-	function () {
-		console.log("playAudio():Audio Success");
-	},
-	function (err) {
-		console.log(err);
-	},
-	function (mediaStatus) {
-		console.log(mediaStatus);
-		streamer = mediaStatus;
-		
-		if (streamer == "0") {
-			// Нулевая позиция. ничего нет
-			$(".l3s").css("background-image", "url(img/play2-play.png)");
-		} else if (streamer == "1"){
-			// буферизация потока
-			$(".l3s").css("background-image", "url(img/play2-stop.png)");
-		} else if (streamer == "2") {
-			// Поток запущен
-			$(".l3s").css("background-image", "url(img/play2-stop.png)");
-        } else if (streamer == "3") {
-			// Пауза
-			$(".l3s").css("background-image", "url(img/play2-play.png)");
-        } else if (streamer == "4") {
-            // Остановлено
-			$(".l3s").css("background-image", "url(img/play2-play.png)");
-        };
-	}
-);
+function my_media(){
+	$my_media = new Media(StreamGO(),
+		function () {
+			console.log("playAudio():Audio Success");
+		},
+		function (err) {
+			if(err == "1"){
+				// Получение медиа было прервано
+				streamer = "0";
+				$(".l3s").css("background-image", "url(img/play2-play.png)");
+			};
+			if(err == "2"){
+				// Проблемы с интернет соединением
+				streamer = "0";
+				$(".l3s").css("background-image", "url(img/play2-play.png)");
+			};
+			if(err == "3"){
+				// Кодек не поддерживается
+				streamer = "0";
+				$(".l3s").css("background-image", "url(img/play2-play.png)");
+				
+			};
+			if(err == "4"){
+				// Не поддерживается
+				streamer = "0";
+				$(".l3s").css("background-image", "url(img/play2-play.png)");
+			};
+		},
+		function (mediaStatus) {
+			console.log(mediaStatus);
+			streamer = mediaStatus;
+			
+			if (streamer == "0") {
+				// Нулевая позиция. ничего нет
+				$(".l3s").css("background-image", "url(img/play2-play.png)");
+			} else if (streamer == "1"){
+				// буферизация потока
+				$(".l3s").css("background-image", "url(img/play2-stop.png)");
+			} else if (streamer == "2") {
+				// Поток запущен
+				$(".l3s").css("background-image", "url(img/play2-stop.png)");
+			} else if (streamer == "3") {
+				// Пауза
+				$(".l3s").css("background-image", "url(img/play2-play.png)");
+			} else if (streamer == "4") {
+				// Остановлено
+				$(".l3s").css("background-image", "url(img/play2-play.png)");
+			};
+		}
+	);
+};
+my_media();
 var successCallback = function(result) {  
   console.log('audio callback ' + JSON.stringify(result));  
   if (result.type==='progress') {  
