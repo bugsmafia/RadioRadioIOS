@@ -637,7 +637,7 @@ function my_media(){
 			jQuery('#logs').append( timeLogs()+' - Медиа задача - успешна подготовлена<br/>');
 		},
 		function (err) {
-			jQuery('#logs').append( timeLogs()+' - Медиа задача - получилась ошибку '+err+'<br/>');
+			jQuery('#logs').append( timeLogs()+' - Медиа задача - получилась ошибку '+JSON.stringify(err)+'<br/>');
 			if(err == "1"){
 				// Получение медиа было прервано
 				jQuery('#logs').append( timeLogs()+' - Медиа задача - 1. Стрим на 0, перезапускаем задачу. Получение медиа было прервано<br/>');
