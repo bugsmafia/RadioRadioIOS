@@ -340,8 +340,16 @@ function streamplay() {
         } else if (streamer == "4") {
 			jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+' поток остановлен (завершен). Пересоздаем и включаем<br/>');
             // Остановлено
-			my_media();
-			$my_media.play();
+			$my_media.stop();
+			streamer == "0"
+			setTimeout(function() {
+				my_media();
+			}, 1000);
+			setTimeout(function() {
+				$my_media.play();
+			}, 2000);
+			
+			//$my_media.play();
         };
     }
 }
