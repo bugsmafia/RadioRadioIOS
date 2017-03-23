@@ -1,3 +1,13 @@
+
+function timeLogs() {
+	var now = new Date();
+	var time = '['+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()+'.'+now.getMilliseconds()+']';
+	return time;
+};
+
+jQuery('#logs').append( timeLogs()+' - Загружен скрипт<br/>');
+
+
 function getCookie(name) {
   var matches = document.cookie.match(new RegExp(
     "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
@@ -10,15 +20,18 @@ function exit(){
 }
 
 function Loader() {
+	jQuery('#logs').append( timeLogs()+' - Начало закрытия окна загрузки<br/>');
 	$(".La").fadeOut(700);
 	$(".Lb").fadeOut(700);
 	$(".Lc").fadeOut(700);
 	setTimeout(function() {
 		$(".preload").fadeOut(350);
 	}, 2000);
+	jQuery('#logs').append( timeLogs()+' - Окно загрузки закрыто<br/>');
 };
 
 $(document).on('pagechange', function() {
+	jQuery('#logs').append( timeLogs()+' - pagechange ON<br/>');
     var lastPage = '#'+$.mobile.activePage.attr('id');
     console.log('setting last page to '+lastPage);
     localStorage.setItem('lastPage',lastPage);
@@ -26,6 +39,7 @@ $(document).on('pagechange', function() {
 
 var redirectedToLastPage = false;
 $(document).bind("pagecreate", function(){
+	jQuery('#logs').append( timeLogs()+' - pagecreate bind<br/>');
     var lastPage = localStorage.getItem('lastPage');
     if(lastPage // lastPage needs to be set
         && !redirectedToLastPage  // only do it on first pageload
@@ -49,10 +63,11 @@ function getPageName(url) {
 
 // Функция выполнения кода при загрузки приложения
 function onLoad() {    
+	jQuery('#logs').append( timeLogs()+' - Приложение onLoad<br/>');
 }
 // Функция исполнения когда приложение готово
 function onDeviceReady() {
-	
+	jQuery('#logs').append( timeLogs()+' - Приложение onDeviceReady<br/>');
 	
 	
     document.addEventListener("pause", onPause, false);
@@ -64,13 +79,17 @@ function onDeviceReady() {
 }
 // Функция при нажатии кнопки НАЗАД
 function onBackKeyDown() {
+	jQuery('#logs').append( timeLogs()+' - Кнопка НАЗАД<br/>');
     if (openmodal == true) {
         console.log('Модальное закрывается');
         document.querySelector("#Modal_Config").hide();
         document.querySelector("#Modal_About").hide();
         document.querySelector("#Modal_Share").hide();
+		document.querySelector("#Modal_Debug").hide();
         openmodal = false;
-    } else {		
+		jQuery('#logs').append( timeLogs()+' - Закрыли все модальные окна<br/>');
+    } else {
+		jQuery('#logs').append( timeLogs()+' - Окно с закрытием приложения<br/>');
         console.log('Модальное было закрыто. останавливаем и закрываем все');        
         ons.notification.confirm('Закрыть радио?').then(
             function(answer) {
@@ -86,17 +105,25 @@ function onBackKeyDown() {
     };
 };
 // Функция при сворачивании приложения
-function onPause() {}
+function onPause() {
+	jQuery('#logs').append( timeLogs()+' - Приложение свернулось, уходим врежим ожидания<br/>');
+	
+}
 // Функция при восстановлении приложения
-function onResume() {}
+function onResume() {
+	jQuery('#logs').append( timeLogs()+' - Приложение восстановилось из спящего режима<br/>');
+	
+}
 var openmodal = false;
 
 function modals(name) {
+	
     if (openmodal == false) {
         openmodal = true;
     } else {
         openmodal = false;
     };
+	//jQuery('#logs').append( timeLogs()+' - Открываем окно '+name+'<br/>');
     switch (name) {
         case "config":
             document.querySelector("#Modal_Config").toggle();
@@ -107,33 +134,43 @@ function modals(name) {
         case "share":
             document.querySelector("#Modal_Share").toggle();
             break;
+		case "debug":
+            document.querySelector("#Modal_Debug").toggle();
+            break;
     };
 }
 var streamChanel;
 streamChanel = false;
 
 function LoadConfigApp() {
+	jQuery('#logs').append( timeLogs()+' - Загружаем конфигурации приложения с сервера<br/>');
     if (localStorage.ConfigApp) {
+		jQuery('#logs').append( timeLogs()+' - Конфигурации доступны из кеша, возьмем их<br/>');
         Config(localStorage.ConfigApp);
     }
     jQuery.getJSON("http://app.radioradio.ru/api.php", function(data) {
 		}).done(function(data) {
 			if (localStorage.ConfigApp) {
+				jQuery('#logs').append( timeLogs()+' - Сохраним конфигурации в локальное хранилище<br/>');
 				localStorage.setItem('ConfigApp', JSON.stringify(data));				
 			} else {
+				jQuery('#logs').append( timeLogs()+' - В локальном хранилище отсутствуют конфигурации. Создадим его и сохраним<br/>');
 				localStorage.setItem('ConfigApp', JSON.stringify(data));
 				Config(localStorage.ConfigApp);
 			};
             
         }).fail(function() {
+			jQuery('#logs').append( timeLogs()+' - Ошибка загрузки конфигурации с сервера<br/>');
             console.log("error");
         }).always(function() {
+			jQuery('#logs').append( timeLogs()+' - Конфигурации с сервера загружены успешно<br/>');
             console.log("complete");
         })
 }
 
 var ConfloadC = 0;
 function SmsSend(text, phone){
+	jQuery('#logs').append( timeLogs()+' - Функция отправки СМС<br/>');
 	ons.notification.confirm('Для участия в опросе, отправь СМС c текстом <'+text+'> на короткий номер '+phone+'').then(
             function(answer) {
                 if (answer === 1) {
@@ -145,39 +182,50 @@ function SmsSend(text, phone){
 }
 
 function Config(data) {
+	jQuery('#logs').append( timeLogs()+' - Обрабатываем конфигурацию приложения<br/>');
     data = JSON.parse(data);
     streamChanel = data.stream;
     if (jQuery.isEmptyObject(data.poll)) {
+		jQuery('#logs').append( timeLogs()+' - Активного опроса нет. Скроем его<br/>');
         jQuery('#poll').hide();
     } else {
+		jQuery('#logs').append( timeLogs()+' - Есть активный опрос, подготавливаем вывод<br/>');
         jQuery('#poll .poll_text').text(data.poll.text);
         jQuery('#poll .poll_ex').html('');
         jQuery.each(data.poll.ex, function(index, value) {
             jQuery('#poll .poll_ex').append('<div class="hor_grid_box"><a onclick="SmsSend(\'' + data.poll.pref + ' ' + (index + 1) + '\', \'' + data.poll.phone + '\')" href="#"><ons-button>' + value + '</ons-button></a></div>')
         });
         jQuery('#poll').show();
+		jQuery('#logs').append( timeLogs()+' - Вывели активный опрос<br/>');
     };
 
     if (jQuery.isEmptyObject(data.conf.ads)) {
         //jQuery('#ads').hide();
+		jQuery('#logs').append( timeLogs()+' - Рекламная компания отсутствует. Скрыли<br/>');
     } else {
         jQuery('#ads .logoAds a').attr('href', data.conf.ads.url);
         jQuery('#ads .logoAds a').css('background-image', 'url(http://app.radioradio.ru/partner/' + data.conf.ads.img + ')');
        // jQuery('#ads').show();
+	   jQuery('#logs').append( timeLogs()+' - Выводим рекламный блок партнера<br/>');
     };
     if (jQuery.isEmptyObject(data.conf.sms)) {
+		jQuery('#logs').append( timeLogs()+' - Функция СМС отключена<br/>');
         jQuery('.buttonSMS').hide();
     } else {
+		jQuery('#logs').append( timeLogs()+' - Функция СМС включена<br/>');
         jQuery('.smsact').attr('href', 'sms://'+data.conf.sms);
         jQuery('.buttonSMS').show();
     };
     if (jQuery.isEmptyObject(data.conf.phone)) {
+		jQuery('#logs').append( timeLogs()+' - Кнопка зконка в студию - Не активна<br/>');
         jQuery('.buttonCall').hide();
     } else {
+		jQuery('#logs').append( timeLogs()+' - Кнопка зконка в студию - Активна<br/>');
         jQuery('.phoneact').attr('href', data.conf.phone);
         jQuery('.buttonCall').show();
     };
 	if(ConfloadC == 0){
+		jQuery('#logs').append( timeLogs()+' - ConfloadC == 0<br/>');
 		if (streamChanel != false) {
 			$(".l3sAnim").css("background-color", "rgba(51,177,255,0.7)");
 			$(".l3s").css("background-image", "url(img/play2-play.png)");
@@ -221,11 +269,15 @@ function statusBar(img) {
 }
 
 var onSuccess = function(result) {
+	jQuery('#logs').append( timeLogs()+' - onSuccess<br/>');
     cancelled(result.completed = false)
 }
-var onError = function(msg) {}
+var onError = function(msg) {
+	jQuery('#logs').append( timeLogs()+' - onError<br/>');
+}
 
 function LogoRadioRadio() {
+	jQuery('#logs').append( timeLogs()+' - Перейти на веб версию проекта?<br/>');
     ons.notification.confirm('Перейти на веб версию RadioRadio.ru?').then(
         function(answer) {
             if (answer === 1) {
@@ -247,6 +299,7 @@ function checkConnection() {
     states[Connection.CELL_4G] = 'мобильный 4G';
     states[Connection.CELL] = 'мобильный, базовый';
     states[Connection.NONE] = 'нет соединения';
+	jQuery('#logs').append( timeLogs()+' - Тип соединения '+states[networkState]+'<br/>');
     return states[networkState];
 }
 
@@ -260,24 +313,32 @@ var OneclickStop = 1;
 // Функция кнопки ПЛЕЙ основной
 
 function streamplay() {
+	jQuery('#logs').append( timeLogs()+' - Функция streamplay<br/>');
     if (streamChanel == false) {
+		jQuery('#logs').append( timeLogs()+' - Каналы серверов отсутствуют<br/>');
         alert('Пожалуйста подождите. Соединяемся с сервером.');
     } else if (checkConnection == 'нет соединения') {
+		jQuery('#logs').append( timeLogs()+' - Интернет соединение - отсутствует<br/>');
         alert('Соединение с интернетом - отсутствует.');
     } else {
         OneclickPlay = 2;
-	
+		jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+'<br/>');
 		if (streamer == "0") {
+			jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+' play<br/>');
 			$my_media.play();
 		} else if (streamer == "1"){
+			jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+' буферизация<br/>');
 			// буферизация потока		
 		} else if (streamer == "2") {
+			jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+' поток запущен. Останавливаем<br/>');
 			// Поток запущен
 			$my_media.stop();
         } else if (streamer == "3") {
+			jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+' поток на паузе. Запускаем<br/>');
 			// Пауза
 			$my_media.play();
         } else if (streamer == "4") {
+			jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+' поток остановлен (завершен). Пересоздаем и включаем<br/>');
             // Остановлено
 			my_media();
 			$my_media.play();
@@ -286,6 +347,7 @@ function streamplay() {
 }
 
 function StreamGO() {
+	jQuery('#logs').append( timeLogs()+' - Функция StreamGO. Запросим адрес потока<br/>');
     var StreamGO;
     var StreamRegion = 'reg' + localStorage.getItem('StreamReg');
 	if(streamChanel){
@@ -306,14 +368,17 @@ function StreamGO() {
 				})
 			};
 		});
+		jQuery('#logs').append( timeLogs()+' - Функция StreamGO. '+StreamGO+'<br/>');
 		return StreamGO;
 	} else {
+		jQuery('#logs').append( timeLogs()+' - Функция StreamGO. '+localStorage.Stream+' из калольного хранилища<br/>');
 		return localStorage.Stream;
 	}
    
 };
 // Функция восстановления воспроизведения
 function streamRePlayGO() {
+	jQuery('#logs').append( timeLogs()+' - Функция восстановления трансляции<br/>');
     setTimeout(function() {
         console.log("Восстанавливаем стрим");
         $("#l2sOffAnim").fadeIn(750);
@@ -321,14 +386,17 @@ function streamRePlayGO() {
 };
 
 function streamRePlay() {
+	
     console.log(navigator.connection.type + ' ' + streamer + ' ' + OneclickStop + ' ' + OneclickPlay);
     if (navigator.connection.type != 'none' && streamer == "1" && OneclickStop == "2") {
         console.log('Сработали условия для перезапуска стрима!');
+		jQuery('#logs').append( timeLogs()+' - Сработали условия для перезапуска стрима!<br/>');
         streamRePlayGO();
     };
 }
 
 function LocalConfig() {
+	jQuery('#logs').append( timeLogs()+' - Загрузка конфигураций<br/>');
     if (localStorage.getItem('ConfloadAlbum') == 'false') {
     } else {
         $("#album").prop('checked', localStorage.getItem('ConfloadAlbum'));
@@ -358,8 +426,9 @@ function LocalConfig() {
 function LoadStream() {
 }
 ons.ready(function() {
-	
+	jQuery('#logs').append( timeLogs()+' - Фреймворк готов<br/>');
 	setInterval(function() {
+		jQuery('#logs').append( timeLogs()+' - Запрашиваем циклом конфигурации приложения<br/>');
 		LoadConfigApp();
 	}, 60000);
     
@@ -411,6 +480,7 @@ ons.ready(function() {
 
                 break;
             case 'music-controls-play':
+				jQuery('#logs').append( timeLogs()+' - Из шторки Плей<br/>');
                 console.log('Плей');
                 OneclickPlay = 2;
                 OneclickStop = 2;
@@ -418,6 +488,7 @@ ons.ready(function() {
 
                 break;
             case 'music-controls-destroy':
+				jQuery('#logs').append( timeLogs()+' - Из шторки Удалено<br/>');
                 console.log('Удалено');
                 OneclickPlay = 1;
                 OneclickStop = 3;
@@ -430,9 +501,11 @@ ons.ready(function() {
                 console.log('music-controls-media-button');
                 break;
             case 'music-controls-headset-unplugged':
+				jQuery('#logs').append( timeLogs()+' - Из шторки unplugged<br/>');
                 console.log('unplugged');
                 break;
             case 'music-controls-headset-plugged':
+				jQuery('#logs').append( timeLogs()+' - Из шторки plugged<br/>');
                 console.log('plugged');
                 break;
             default:
@@ -444,6 +517,7 @@ ons.ready(function() {
 
 
 	function volumecurrent(){
+		
 		window.plugins.mediaVolume.getVol(
 		  function(data){
 			var cur = Math.floor((data.current * 100) / data.max);
@@ -468,8 +542,9 @@ ons.ready(function() {
 });
 
 document.addEventListener("init", function(event) {
+	jQuery('#logs').append( timeLogs()+' - Инициализация кода<br/>');
   if (event.target.id == "RadioRadio") {
-		
+		jQuery('#logs').append( timeLogs()+' - Инициализация RadioRadio<br/>');
 		document.addEventListener("deviceready", onDeviceReady, false);
 		LoadConfigApp();
 		LoadStatus();
@@ -555,25 +630,31 @@ document.addEventListener('deviceready', function () {
 
 //playAudio(StreamGO())
 function my_media(){
+	jQuery('#logs').append( timeLogs()+' - Подготовка к созданию МЕДИА задачи<br/>');
 	$my_media = new Media(StreamGO(),
 		function () {
 			console.log("playAudio():Audio Success");
+			jQuery('#logs').append( timeLogs()+' - Медиа задача - успешна подготовлена<br/>');
 		},
 		function (err) {
+			jQuery('#logs').append( timeLogs()+' - Медиа задача - получилась ошибку '+err+'<br/>');
 			if(err == "1"){
 				// Получение медиа было прервано
+				jQuery('#logs').append( timeLogs()+' - Медиа задача - 1. Стрим на 0, перезапускаем задачу. Получение медиа было прервано<br/>');
 				streamer = "0";
 				$(".l3s").css("background-image", "url(img/play2-play.png)");
 				my_media();
 			};
 			if(err == "2"){
 				// Проблемы с интернет соединением
+				jQuery('#logs').append( timeLogs()+' - Медиа задача - 1. Стрим на 0, перезапускаем задачу. Проблемы с интернет соединением<br/>');
 				streamer = "0";
 				$(".l3s").css("background-image", "url(img/play2-play.png)");
 				my_media();
 			};
 			if(err == "3"){
 				// Кодек не поддерживается
+				jQuery('#logs').append( timeLogs()+' - Медиа задача - 1. Стрим на 0, перезапускаем задачу. Кодек не поддерживается<br/>');
 				streamer = "0";
 				$(".l3s").css("background-image", "url(img/play2-play.png)");
 				my_media();
@@ -581,6 +662,7 @@ function my_media(){
 			};
 			if(err == "4"){
 				// Не поддерживается
+				jQuery('#logs').append( timeLogs()+' - Медиа задача - 1. Стрим на 0, перезапускаем задачу. Не поддерживается<br/>');
 				streamer = "0";
 				$(".l3s").css("background-image", "url(img/play2-play.png)");
 				my_media();
@@ -589,7 +671,7 @@ function my_media(){
 		function (mediaStatus) {
 			console.log(mediaStatus);
 			streamer = mediaStatus;
-			
+			jQuery('#logs').append( timeLogs()+' - Медиа статус - '+mediaStatus+'<br/>');
 			if (streamer == "0") {
 				// Нулевая позиция. ничего нет
 				$(".l3s").css("background-image", "url(img/play2-play.png)");
@@ -611,6 +693,7 @@ function my_media(){
 };
 my_media();
 var successCallback = function(result) {  
+	jQuery('#logs').append( timeLogs()+' - audio callback - '+ JSON.stringify(result)+'<br/>');
   console.log('audio callback ' + JSON.stringify(result));  
   if (result.type==='progress') {  
     console.log('progress/duration/available - ' + result.progress + '/' + result.duration + '/' + result.available); // available not currently supported  
