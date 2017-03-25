@@ -358,32 +358,42 @@ function StreamGO() {
 	jQuery('#logs').append( timeLogs()+' - Функция StreamGO. Запросим адрес потока<br/>');
     var StreamGO;
     var StreamRegion = 'reg' + localStorage.getItem('StreamReg');
-	if(streamChanel){
-		 $.each(streamChanel, function(key, region) {
-			// выбираем регион
-			if (key == StreamRegion) {
-				$.each(region, function(index, codec) {
-					// выбираем кодек
-					if (index == 'aac') {
-						$.each(codec, function(index, qa) {
-							$.each(qa, function(index, chanel) {
-								StreamGO = chanel.patch;
-								localStorage.setItem('Stream', StreamGO);
-								console.log(StreamGO);
-							})
-						})
-					};
-				})
-			};
-		});
-		jQuery('#logs').append( timeLogs()+' - Функция StreamGO. '+StreamGO+'<br/>');
-		return StreamGO;
+	if(ons.platform.isAndroid() == true){
+		return 'http://play.radioradio.ru/mp3';
 	} else {
-		jQuery('#logs').append( timeLogs()+' - Функция StreamGO. '+localStorage.Stream+' из калольного хранилища<br/>');
-		return localStorage.Stream;
+		
+	
+		if(streamChanel){
+			 $.each(streamChanel, function(key, region) {
+				// выбираем регион
+				if (key == StreamRegion) {
+					$.each(region, function(index, codec) {
+						// выбираем кодек
+						if (index == 'aac') {
+							$.each(codec, function(index, qa) {
+								$.each(qa, function(index, chanel) {
+									StreamGO = chanel.patch;
+									localStorage.setItem('Stream', StreamGO);
+									console.log(StreamGO);
+								})
+							})
+						};
+					})
+				};
+			});
+			jQuery('#logs').append( timeLogs()+' - Функция StreamGO. '+StreamGO+'<br/>');
+			return StreamGO;
+		} else {
+			jQuery('#logs').append( timeLogs()+' - Функция StreamGO. '+localStorage.Stream+' из калольного хранилища<br/>');
+			return localStorage.Stream;
+		}
 	}
    
 };
+
+function StreamGO() {
+	return 'http://play.radioradio.ru/mp3';
+}
 // Функция восстановления воспроизведения
 function streamRePlayGO() {
 	jQuery('#logs').append( timeLogs()+' - Функция восстановления трансляции<br/>');
