@@ -460,7 +460,7 @@ ons.ready(function() {
     LocalConfig();
 
 		if(typeof screen){
-			screen.lockOrientation('portrait');
+			screen.orientation.lock('portrait');
 		};
     $('input:checkbox').change(function() {
         var IdName = $(this).attr('id');
