@@ -95,7 +95,7 @@ function onBackKeyDown() {
             function(answer) {
                 if (answer === 1) {
 					streamer = 1;
-					$my_media.stop();
+					$my_media.release();
 					OneclickPlay = 2;
                     console.log('закрывается');
 					navigator.app.exitApp();
@@ -332,7 +332,7 @@ function streamplay() {
 		} else if (streamer == "2") {
 			jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+' поток запущен. Останавливаем<br/>');
 			// Поток запущен
-			$my_media.stop();
+			$my_media.release();
         } else if (streamer == "3") {
 			jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+' поток на паузе. Запускаем<br/>');
 			// Пауза
@@ -340,7 +340,7 @@ function streamplay() {
         } else if (streamer == "4") {
 			jQuery('#logs').append( timeLogs()+' - Статус streamer - '+streamer+' поток остановлен (завершен). Пересоздаем и включаем<br/>');
             // Остановлено
-			$my_media.stop();
+			$my_media.release();
 			streamer == "0"
 
 			my_media();
@@ -538,7 +538,7 @@ ons.ready(function() {
 		  function(data){
 			var cur = Math.floor((data.current * 100) / data.max);
 			jQuery("#volume").val(cur)
-		  },
+		  }, 
 		  function(error){
 		});
 	}
@@ -549,7 +549,7 @@ ons.ready(function() {
 	
     jQuery("#volume").on('input', function() {
         var volume = jQuery("#volume").val();
-        window.plugins.mediaVolume.setVol(volume);
+		$my_media.setVolume(volume);
         console.log(volume);
     });
 	
