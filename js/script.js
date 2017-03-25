@@ -342,12 +342,12 @@ function streamplay() {
             // Остановлено
 			$my_media.stop();
 			streamer == "0"
-			setTimeout(function() {
-				my_media();
-			}, 1000);
+
+			my_media();
+
 			setTimeout(function() {
 				$my_media.play();
-			}, 2000);
+			}, 500);
 			
 			//$my_media.play();
         };
