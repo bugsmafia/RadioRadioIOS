@@ -545,7 +545,7 @@ ons.ready(function() {
 	volumecurrent();
 	setInterval(function() {
         volumecurrent()
-    }, 1200);
+    }, 1200); 
 	
     jQuery("#volume").on('input', function() {
         var volume = jQuery("#volume").val();
