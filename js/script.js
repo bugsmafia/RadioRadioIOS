@@ -359,7 +359,7 @@ function StreamGO() {
     var StreamGO;
     var StreamRegion = 'reg' + localStorage.getItem('StreamReg');
 	if(ons.platform.isAndroid() == true){
-		return 'http://play.radioradio.ru/mp3';
+		return 'http://play.radioradio.ru/mp3?cash='+Date.now();
 	} else {
 		
 	
@@ -382,18 +382,16 @@ function StreamGO() {
 				};
 			});
 			jQuery('#logs').append( timeLogs()+' - Функция StreamGO. '+StreamGO+'<br/>');
-			return StreamGO;
+			return StreamGO+'?cash='+Date.now();
 		} else {
 			jQuery('#logs').append( timeLogs()+' - Функция StreamGO. '+localStorage.Stream+' из калольного хранилища<br/>');
-			return localStorage.Stream;
+			return localStorage.Stream+'?cash='+Date.now();
 		}
 	}
    
 };
 
-function StreamGO() {
-	return 'http://play.radioradio.ru/mp3';
-}
+
 // Функция восстановления воспроизведения
 function streamRePlayGO() {
 	jQuery('#logs').append( timeLogs()+' - Функция восстановления трансляции<br/>');
