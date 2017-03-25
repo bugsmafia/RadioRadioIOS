@@ -241,32 +241,7 @@ localStorage.setItem('TrackIdNow', '');
 // Статус, играет или нет.
 var Playing = false;
 // Вывод статус бара в шторку с инфой трека и обложкой
-function statusBar(img) {
-    if (streamer == "1") {
-        Playing = false;
-    } else {
-        Playing = true;
-    };
-    if (localStorage.getItem('ConfloadAlbum') == 'false') {
-		
-	} else {
-        img = 'icon.png';
-    };
-	
-	/*
-    MusicControls.create({
-        track: localStorage.NowSong,
-        artist: localStorage.NowArtist,
-        cover: img,
-        isPlaying: Playing,
 
-        dismissable: true,
-        hasPrev: false,
-        hasNext: false,
-        hasClose: false
-    }, onSuccess, onError);
-	*/
-}
 
 var onSuccess = function(result) {
 	jQuery('#logs').append( timeLogs()+' - onSuccess<br/>');
