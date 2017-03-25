@@ -323,9 +323,9 @@ ons.ready(function() {
     
    
 
-    setInterval(function() {
-        streamRePlay()
-    }, 6000);
+    //setInterval(function() {
+   //     streamRePlay()
+   // }, 6000);
     // Sharing
 
 
