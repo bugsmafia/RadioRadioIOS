@@ -429,7 +429,7 @@ ons.ready(function() {
     MusicControls.subscribe(events);
     MusicControls.listen();
 
-
+	/*
 	function volumecurrent(){
 		
 		window.plugins.mediaVolume.getVol(
@@ -444,7 +444,7 @@ ons.ready(function() {
 	setInterval(function() {
         volumecurrent()
     }, 1200); 
-	
+	*/
     jQuery("#volume").on('input', function() {
         var volume = jQuery("#volume").val();
 		volume = volume / 100;
