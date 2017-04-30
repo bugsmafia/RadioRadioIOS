@@ -85,7 +85,7 @@ function infoAlbum(type, id, md, artist, song) {
                 console.log(data.cached);
 				ContentSync.loadUrl('file://' + data.localPath, function() {
 					if (data.localPath) {
-						statusBar(data.localPath);
+						//statusBar(data.localPath);
 						console.log('Ларге - отправили в бар Готово');
 					}
 				});
@@ -108,7 +108,7 @@ function infoAlbum(type, id, md, artist, song) {
         statusCode: {
             400: function() {
                 infoArtist(type, id, md, artist, song);
-				statusBar('icon.png');
+				//statusBar('icon.png');
             }
         }
     });
@@ -198,7 +198,7 @@ function infoArtist(type, id, md, artist, song) {
                 console.log(data.cached);
 				ContentSync.loadUrl('file://' + data.localPath, function() {
 					if (data.localPath) {
-						statusBar(data.localPath);
+						//statusBar(data.localPath);
 						console.log('Ларге - отправили в бар Готово');
 					}
 				});
@@ -215,7 +215,7 @@ function infoArtist(type, id, md, artist, song) {
         },
         statusCode: {
             400: function() {
-				statusBar('icon.png'); 				
+				//statusBar('icon.png'); 				
 			}
         }
     });
